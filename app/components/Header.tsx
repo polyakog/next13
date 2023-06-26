@@ -17,6 +17,9 @@ const StyledHeader = styled.header`
 
 const StyledContainer = styled.div`
   width: 90vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Header = () => {

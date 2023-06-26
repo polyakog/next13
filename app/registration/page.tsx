@@ -1,89 +1,26 @@
 "use client";
 
 import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import { styled } from "styled-components";
-import { baseTheme } from "../constants/theme";
-import Image from "next/image";
+import { Formik } from "formik";
 import showPasswordBtn from "../assets/svg/eye-outline.svg";
-
-const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  width: 378px;
-  height: 624px;
-  margin: 0 auto;
-
-  background: ${baseTheme.colors.dark["300"]};
-`;
-
-const StyledTitle = styled.h2`
-  color: ${baseTheme.colors.light["100"]};
-
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 36px;
-`;
-
-const StyledForm = styled(Form)`
-  color: #8d9094;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  label {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-
-    font-size: 16px;
-    width: 330px;
-    height: 80px;
-  }
-`;
-
-const StyledField = styled(Field)`
-  font-size: 14px;
-  width: 100%;
-  height: 36px;
-  border: 1px solid ${baseTheme.colors.dark["100"]};
-`;
-
-const StyledBtn = styled.button`
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 24px;
-  height: 40px;
-  width: 330px;
-
-  color: ${baseTheme.colors.light["100"]};
-  background: ${baseTheme.colors.accent["500"]};
-`;
-
-const StyledShowPasswordBtn = styled(Image)``;
-
-const StyledErrorMsg = styled.div`
-  color: ${baseTheme.colors.danger["500"]};
-`;
-
-const SignupSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(6, "Too Short!")
-    .max(30, "Too Long!")
-    .required("Required username"),
-  password: Yup.string()
-    .min(6, "Too Short!")
-    .max(20, "Too Long!")
-    .required("Required password"),
-  email: Yup.string().email("Invalid email").required("Required email"),
-  passwordConfirmation: Yup.string()
-    .required("required")
-    .oneOf([Yup.ref("password")], "password mismatch"),
-});
+import hidePasswordBtn from "../assets/svg/eye-off-outline.svg";
+import googleIcon from "../assets/svg/google-icon.svg";
+import githubIcon from "../assets/svg/github-icon.svg";
+import { SignupSchema } from "../schemas/registrationShema";
+import {
+  StyledBtn,
+  StyledContainer,
+  StyledErrorMsg,
+  StyledField,
+  StyledForm,
+  StyledShowPasswordBtn,
+  StyledSignIn,
+  StyledSignInWrapper,
+  StyledSocialMediaIcon,
+  StyledSocialMediaWrapper,
+  StyledText,
+  StyledTitle,
+} from "../components";
 
 export default function Registration() {
   const [passwordType, setPasswordType] = useState("password");
@@ -108,6 +45,10 @@ export default function Registration() {
   return (
     <StyledContainer>
       <StyledTitle>Sign Up</StyledTitle>
+      <StyledSocialMediaWrapper>
+        <StyledSocialMediaIcon alt="google-icon" src={googleIcon} />
+        <StyledSocialMediaIcon alt="github-icon" src={githubIcon} />
+      </StyledSocialMediaWrapper>
       <Formik
         initialValues={{
           username: "",
@@ -139,30 +80,41 @@ export default function Registration() {
           <StyledForm>
             <label>
               Username
-              <StyledField name="username" />
-              <StyledShowPasswordBtn
-                alt="show password"
-                src={showPasswordBtn}
-                onClick={() => showPasswordHandler()}
+              <StyledField
+                name="username"
+                // border={errors.username?.length ? "red" : "white"}
               />
               {errors.username && touched.username ? (
                 <StyledErrorMsg>{errors.username}</StyledErrorMsg>
               ) : null}
             </label>
-            <label>
+            <label id="pass">
               Password
               <StyledField name="password" type={passwordType} />
               <StyledShowPasswordBtn
                 alt="show password"
-                src={showPasswordBtn}
-                onClick={() => showPasswordConfirmationHandler()}
+                src={
+                  passwordType === "password"
+                    ? showPasswordBtn
+                    : hidePasswordBtn
+                }
+                onClick={() => showPasswordHandler()}
               />
               {errors.password && touched.password ? (
                 <StyledErrorMsg>{errors.password}</StyledErrorMsg>
               ) : null}
             </label>
-            <label>
+            <label id="pass">
               Password confirmation
+              <StyledShowPasswordBtn
+                alt="show password"
+                src={
+                  passwordConfirmationType === "password"
+                    ? showPasswordBtn
+                    : hidePasswordBtn
+                }
+                onClick={() => showPasswordConfirmationHandler()}
+              />
               <StyledField
                 name="passwordConfirmation"
                 type={passwordConfirmationType}
@@ -182,6 +134,10 @@ export default function Registration() {
           </StyledForm>
         )}
       </Formik>
+      <StyledSignInWrapper>
+        <StyledText>Do you have an account?</StyledText>
+        <StyledSignIn href="/login">Sign in</StyledSignIn>
+      </StyledSignInWrapper>
     </StyledContainer>
   );
 }
